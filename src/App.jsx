@@ -165,3 +165,88 @@ export default function App() {
         </div>
 
 // Component continued...
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Days Remaining</h2>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  dataKey="value"
+                  data={[
+                    { name: 'Elapsed', value: daysElapsed },
+                    { name: 'Remaining', value: daysRemaining },
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label={({ name, value }) => `${name}: ${value}`}
+                >
+                  {COLORS.map((color, index) => (
+                    <Cell key={`cell-${index}`} fill={color} />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Progress to Goal</h2>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  dataKey="value"
+                  data={[
+                    { name: 'Progress', value: parseFloat(weightProgress.toFixed(1)) },
+                    { name: 'Remaining', value: parseFloat((100 - weightProgress).toFixed(1)) },
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label={({ name, value }) => `${name}: ${value}`}
+                >
+                  {COLORS.map((color, index) => (
+                    <Cell key={`cell-${index}`} fill={color} />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Weight History</h2>
+          <table className="w-full border rounded overflow-hidden">
+            <thead className="bg-purple-100">
+              <tr>
+                <th className="border p-2">Date</th>
+                <th className="border p-2">Weight (kg)</th>
+                <th className="border p-2">Change</th>
+                <th className="border p-2">Progress (%)</th>
+                <th className="border p-2">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.map((entry, index) => (
+                <tr key={index} className="hover:bg-purple-50">
+                  <td className="border p-2">{entry.date}</td>
+                  <td className="border p-2">{entry.weight.toFixed(1)}</td>
+                  <td className="border p-2">{entry.change.toFixed(1)}</td>
+                  <td className="border p-2">{entry.progress.toFixed(1)}%</td>
+                  <td className="border p-2 text-center">
+                    <button
+                      onClick={() => handleDeleteEntry(entry.date)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
