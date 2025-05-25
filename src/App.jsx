@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import {
   LineChart, Line, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend
 } from "recharts";
+import { format, parseISO } from "date-fns";
 
 const getInitialData = () => {
   const saved = localStorage.getItem("weightDataByUser");
@@ -113,6 +114,16 @@ export default function App() {
       <div className="max-w-2xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
         <h1 className="text-3xl font-bold mb-6 text-center text-purple-700">Weight Tracker</h1>
 
+        <div className="mb-6">
+          <label className="block font-medium mb-1">Select User</label>
+          <select value={activeUser} onChange={handleUserChange} className="border border-purple-300 p-2 w-full rounded">
+            {users.map((user) => (
+              <option key={user} value={user}>{user}</option>
+            ))}
+          </select>
+          <button onClick={handleNewUser} className="mt-2 bg-purple-100 hover:bg-purple-200 text-purple-800 px-4 py-2 rounded">+ Add User</button>
+        </div>
+
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
             <label className="block font-medium mb-1">Start Weight</label>
@@ -144,87 +155,13 @@ export default function App() {
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={fullChartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" angle={-45} textAnchor="end" interval="preserveStartEnd" />
+              <XAxis dataKey="date" tickFormatter={(str) => format(parseISO(str), "MMM d")} interval={10} />
               <YAxis domain={['auto', 'auto']} tickFormatter={(v) => v.toFixed(1)} />
-              <Tooltip formatter={(value) => parseFloat(value).toFixed(1)} />
-              <Area type="monotone" dataKey="target" stroke={LINE_COLORS.target} fill={LINE_COLORS.areaFill} name="Target" />
+              <Tooltip formatter={(value) => parseFloat(value).toFixed(1)} labelFormatter={(label) => format(parseISO(label), "MMM d, yyyy")} />
+              <Area type="monotone" dataKey="target" stroke={LINE_COLORS.target} fill={LINE_COLORS.areaFill} name="Target" dot={false} />
               <Line type="monotone" dataKey="weight" stroke={LINE_COLORS.actual} name="Actual" strokeWidth={2} dot connectNulls />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Days Remaining</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  dataKey="value"
-                  data={[
-                    { name: 'Elapsed', value: parseFloat(daysElapsed.toFixed(1)) },
-                    { name: 'Remaining', value: parseFloat(daysRemaining.toFixed(1)) },
-                  ]}
-                  cx="50%" cy="50%" outerRadius={80} label
-                >
-                  {COLORS.map((color, index) => (
-                    <Cell key={`cell-${index}`} fill={color} />
-                  ))}
-                </Pie>
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Progress to Goal</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  dataKey="value"
-                  data={[
-                    { name: 'Progress', value: parseFloat(weightProgress.toFixed(1)) },
-                    { name: 'Remaining', value: parseFloat((100 - weightProgress).toFixed(1)) },
-                  ]}
-                  cx="50%" cy="50%" outerRadius={80} label
-                >
-                  {COLORS.map((color, index) => (
-                    <Cell key={`cell-${index}`} fill={color} />
-                  ))}
-                </Pie>
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Weight History</h2>
-          <table className="w-full border rounded overflow-hidden text-sm">
-            <thead className="bg-purple-100">
-              <tr>
-                <th className="border p-2">Date</th>
-                <th className="border p-2">Weight (kg)</th>
-                <th className="border p-2">Change</th>
-                <th className="border p-2">Progress (%)</th>
-                <th className="border p-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {logs.map((entry, index) => (
-                <tr key={index} className="hover:bg-purple-50">
-                  <td className="border p-2">{entry.date}</td>
-                  <td className="border p-2">{entry.weight.toFixed(1)}</td>
-                  <td className="border p-2">{entry.change.toFixed(1)}</td>
-                  <td className="border p-2">{entry.progress.toFixed(1)}</td>
-                  <td className="border p-2 text-center">
-                    <button onClick={() => handleDeleteEntry(entry.date)} className="text-red-500 hover:underline">Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </div>
-  );
-}
+// Component continued...
