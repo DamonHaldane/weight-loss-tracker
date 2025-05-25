@@ -85,7 +85,13 @@ export default function App() {
     }
   };
 
-  const today = new Date();
+  
+  const handleDelete = (index) => {
+    const updatedLogs = [...logs];
+    updatedLogs.splice(index, 1);
+    updateUserData({ logs: updatedLogs });
+  };
+const today = new Date();
   const targetDate = new Date(goalDate);
   const startDateObj = new Date(startDate);
   const totalDays = Math.max(0, Math.ceil((targetDate - startDateObj) / (1000 * 60 * 60 * 24)));
@@ -161,14 +167,14 @@ export default function App() {
               <Area type="monotone" dataKey="target" stroke={LINE_COLORS.target} fill={LINE_COLORS.areaFill} name="Target" dot={false} />
               <Line type="monotone" dataKey="weight" stroke={LINE_COLORS.actual} name="Actual" strokeWidth={2} dot connectNulls />
             </LineChart>
-          </ResponsiveContainer>}
+          </ResponsiveContainer>
         </div>
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
             <h2 className="text-xl font-semibold mb-2">Days Remaining</h2>
-            {logs.length > 0 && <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
                   dataKey="value"
@@ -179,7 +185,7 @@ export default function App() {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  label={({ name, value }) => `${name.slice(0, 8)}: ${value.toFixed(1)}`}
+                  label={({ name, value }) => `${name}: ${value.toFixed(1)}`}
                 >
                   {COLORS.map((color, index) => (
                     <Cell key={`cell-${index}`} fill={color} />
@@ -187,11 +193,11 @@ export default function App() {
                 </Pie>
                 <Legend />
               </PieChart>
-            </ResponsiveContainer>}
+            </ResponsiveContainer>
           </div>
           <div>
             <h2 className="text-xl font-semibold mb-2">Progress to Goal</h2>
-            {logs.length > 0 && <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
                   dataKey="value"
@@ -202,7 +208,7 @@ export default function App() {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  label={({ name, value }) => `${name.slice(0, 8)}: ${value.toFixed(1)}`}
+                  label={({ name, value }) => `${name}: ${value.toFixed(1)}`}
                 >
                   {COLORS.map((color, index) => (
                     <Cell key={`cell-${index}`} fill={color} />
@@ -210,7 +216,7 @@ export default function App() {
                 </Pie>
                 <Legend />
               </PieChart>
-            </ResponsiveContainer>}
+            </ResponsiveContainer>
           </div>
         </div>
 
