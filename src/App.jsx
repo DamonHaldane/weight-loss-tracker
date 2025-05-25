@@ -114,6 +114,93 @@ export default function App() {
             Save Entry
           </button>
         </div>
+
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">Progress Chart</h2>
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={logs.map((log, i) => ({ ...log, target: startWeight - ((startWeight - goalWeight) / totalDays) * i }))}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis domain={['auto', 'auto']} />
+              <Tooltip />
+              <Line type="monotone" dataKey="weight" stroke="#a78bfa" name="Actual" />
+              <Line type="monotone" dataKey="target" stroke="#c084fc" name="Target" dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Days Remaining</h2>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  dataKey="value"
+                  data={[
+                    { name: 'Elapsed', value: daysElapsed },
+                    { name: 'Remaining', value: daysRemaining },
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+                >
+                  {COLORS.map((color, index) => (
+                    <Cell key={`cell-${index}`} fill={color} />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Progress to Goal</h2>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  dataKey="value"
+                  data={[
+                    { name: 'Progress', value: weightProgress },
+                    { name: 'Remaining', value: 100 - weightProgress },
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+                >
+                  {COLORS.map((color, index) => (
+                    <Cell key={`cell-${index}`} fill={color} />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-2">History</h2>
+          <table className="w-full border rounded overflow-hidden">
+            <thead className="bg-purple-100">
+              <tr>
+                <th className="border p-2">Date</th>
+                <th className="border p-2">Weight (kg)</th>
+                <th className="border p-2">Change</th>
+                <th className="border p-2">Progress (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs && logs.map((entry, index) => (
+                <tr key={index} className="hover:bg-purple-50">
+                  <td className="border p-2">{entry.date}</td>
+                  <td className="border p-2">{entry.weight}</td>
+                  <td className="border p-2">{entry.change}</td>
+                  <td className="border p-2">{entry.progress}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
