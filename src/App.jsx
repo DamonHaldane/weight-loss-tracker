@@ -103,8 +103,8 @@ export default function App() {
     const target = startWeight - ((startWeight - goalWeight) / totalDays) * i;
     fullChartData.push({
       date: isoDate,
-      target,
-      weight: logMap[isoDate] ?? null // Ensure defined (null still renders dots)
+      target: parseFloat(target.toFixed(1)),
+      weight: logMap[isoDate] ?? null
     });
   }
 
@@ -144,11 +144,11 @@ export default function App() {
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={fullChartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis domain={['auto', 'auto']} />
-              <Tooltip />
+              <XAxis dataKey="date" angle={-45} textAnchor="end" interval="preserveStartEnd" />
+              <YAxis domain={['auto', 'auto']} tickFormatter={(v) => v.toFixed(1)} />
+              <Tooltip formatter={(value) => parseFloat(value).toFixed(1)} />
               <Area type="monotone" dataKey="target" stroke={LINE_COLORS.target} fill={LINE_COLORS.areaFill} name="Target" />
-              <Line type="monotone" dataKey="weight" stroke={LINE_COLORS.actual} name="Actual" strokeWidth={2} dot />
+              <Line type="monotone" dataKey="weight" stroke={LINE_COLORS.actual} name="Actual" strokeWidth={2} dot connectNulls />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -161,8 +161,8 @@ export default function App() {
                 <Pie
                   dataKey="value"
                   data={[
-                    { name: 'Elapsed', value: daysElapsed },
-                    { name: 'Remaining', value: daysRemaining },
+                    { name: 'Elapsed', value: parseFloat(daysElapsed.toFixed(1)) },
+                    { name: 'Remaining', value: parseFloat(daysRemaining.toFixed(1)) },
                   ]}
                   cx="50%" cy="50%" outerRadius={80} label
                 >
@@ -181,8 +181,8 @@ export default function App() {
                 <Pie
                   dataKey="value"
                   data={[
-                    { name: 'Progress', value: weightProgress },
-                    { name: 'Remaining', value: 100 - weightProgress },
+                    { name: 'Progress', value: parseFloat(weightProgress.toFixed(1)) },
+                    { name: 'Remaining', value: parseFloat((100 - weightProgress).toFixed(1)) },
                   ]}
                   cx="50%" cy="50%" outerRadius={80} label
                 >
@@ -212,9 +212,9 @@ export default function App() {
               {logs.map((entry, index) => (
                 <tr key={index} className="hover:bg-purple-50">
                   <td className="border p-2">{entry.date}</td>
-                  <td className="border p-2">{entry.weight}</td>
-                  <td className="border p-2">{entry.change}</td>
-                  <td className="border p-2">{entry.progress}</td>
+                  <td className="border p-2">{entry.weight.toFixed(1)}</td>
+                  <td className="border p-2">{entry.change.toFixed(1)}</td>
+                  <td className="border p-2">{entry.progress.toFixed(1)}</td>
                   <td className="border p-2 text-center">
                     <button onClick={() => handleDeleteEntry(entry.date)} className="text-red-500 hover:underline">Delete</button>
                   </td>
@@ -223,6 +223,7 @@ export default function App() {
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   );
