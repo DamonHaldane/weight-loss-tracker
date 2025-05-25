@@ -57,6 +57,11 @@ export default function App() {
     setLogDate("");
   };
 
+  const handleDeleteEntry = (entryDate) => {
+    const filteredLogs = logs.filter(entry => entry.date !== entryDate);
+    updateUserData({ logs: filteredLogs });
+  };
+
   const handleUserChange = (e) => {
     setActiveUser(e.target.value);
   };
@@ -88,18 +93,18 @@ export default function App() {
   const currentWeight = logs.length > 0 ? logs[logs.length - 1].weight : startWeight;
   const weightProgress = Math.max(0, Math.min(100, ((startWeight - currentWeight) / (startWeight - goalWeight)) * 100));
 
-  // Generate full chart range with target weights
+  const logMap = Object.fromEntries(logs.map(l => [l.date, l.weight]));
   const fullChartData = [];
+
   for (let i = 0; i <= totalDays; i++) {
     const date = new Date(startDateObj);
     date.setDate(date.getDate() + i);
     const isoDate = date.toISOString().split("T")[0];
     const target = startWeight - ((startWeight - goalWeight) / totalDays) * i;
-    const logEntry = logs.find(l => l.date === isoDate);
     fullChartData.push({
       date: isoDate,
-      weight: logEntry ? logEntry.weight : undefined,
-      target: target
+      target,
+      weight: logMap[isoDate] ?? null // Ensure defined (null still renders dots)
     });
   }
 
@@ -142,7 +147,7 @@ export default function App() {
               <XAxis dataKey="date" />
               <YAxis domain={['auto', 'auto']} />
               <Tooltip />
-              <Area type="monotone" dataKey="target" stroke={LINE_COLORS.target} fill={LINE_COLORS.areaFill} />
+              <Area type="monotone" dataKey="target" stroke={LINE_COLORS.target} fill={LINE_COLORS.areaFill} name="Target" />
               <Line type="monotone" dataKey="weight" stroke={LINE_COLORS.actual} name="Actual" strokeWidth={2} dot />
             </LineChart>
           </ResponsiveContainer>
@@ -189,6 +194,34 @@ export default function App() {
               </PieChart>
             </ResponsiveContainer>
           </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Weight History</h2>
+          <table className="w-full border rounded overflow-hidden text-sm">
+            <thead className="bg-purple-100">
+              <tr>
+                <th className="border p-2">Date</th>
+                <th className="border p-2">Weight (kg)</th>
+                <th className="border p-2">Change</th>
+                <th className="border p-2">Progress (%)</th>
+                <th className="border p-2">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.map((entry, index) => (
+                <tr key={index} className="hover:bg-purple-50">
+                  <td className="border p-2">{entry.date}</td>
+                  <td className="border p-2">{entry.weight}</td>
+                  <td className="border p-2">{entry.change}</td>
+                  <td className="border p-2">{entry.progress}</td>
+                  <td className="border p-2 text-center">
+                    <button onClick={() => handleDeleteEntry(entry.date)} className="text-red-500 hover:underline">Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
