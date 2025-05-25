@@ -155,7 +155,7 @@ export default function App() {
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={fullChartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" tickFormatter={(str) => format(parseISO(str), "MMM d")} interval={10} />
+              <XAxis dataKey="date" tickFormatter={(str) => format(parseISO(str), "MMM d")} angle={-30} dy={10} interval={15} />
               <YAxis domain={['auto', 'auto']} tickFormatter={(v) => v.toFixed(1)} />
               <Tooltip formatter={(value) => parseFloat(value).toFixed(1)} labelFormatter={(label) => format(parseISO(label), "MMM d, yyyy")} />
               <Area type="monotone" dataKey="target" stroke={LINE_COLORS.target} fill={LINE_COLORS.areaFill} name="Target" dot={false} />
@@ -164,7 +164,7 @@ export default function App() {
           </ResponsiveContainer>
         </div>
 
-// Component continued...
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
             <h2 className="text-xl font-semibold mb-2">Days Remaining</h2>
@@ -179,7 +179,7 @@ export default function App() {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  label={({ name, value }) => `${name}: ${value}`}
+                  label={({ name, value }) => `${name}: ${value.toFixed(1)}`}
                 >
                   {COLORS.map((color, index) => (
                     <Cell key={`cell-${index}`} fill={color} />
@@ -202,7 +202,7 @@ export default function App() {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  label={({ name, value }) => `${name}: ${value}`}
+                  label={({ name, value }) => `${name}: ${value.toFixed(1)}`}
                 >
                   {COLORS.map((color, index) => (
                     <Cell key={`cell-${index}`} fill={color} />
