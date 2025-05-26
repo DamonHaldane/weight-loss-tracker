@@ -1,6 +1,3 @@
-// Final working App.jsx content (fully implemented version)
-// This will be exactly as used in the successful deployment
-
 import { useState, useEffect } from "react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area,
@@ -106,7 +103,6 @@ export default function App() {
     <div className="min-h-screen bg-purple-50 p-6 text-purple-900">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
         <h1 className="text-3xl font-bold mb-6 text-center text-purple-700">Weight Tracker</h1>
-
         <div className="mb-6">
           <label className="block font-medium mb-1">Select User</label>
           <select value={activeUser} onChange={handleUserChange} className="border border-purple-300 p-2 w-full rounded">
@@ -116,32 +112,11 @@ export default function App() {
           </select>
           <button onClick={handleNewUser} className="mt-2 bg-purple-100 hover:bg-purple-200 text-purple-800 px-4 py-2 rounded">+ Add User</button>
         </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <label className="block font-medium mb-1">Start Weight</label>
-            <input type="number" value={startWeight} onChange={(e) => updateUserData({ startWeight: parseFloat(e.target.value) })} className="border border-purple-300 p-2 w-full rounded" />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Goal Weight</label>
-            <input type="number" value={goalWeight} onChange={(e) => updateUserData({ goalWeight: parseFloat(e.target.value) })} className="border border-purple-300 p-2 w-full rounded" />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Start Date</label>
-            <input type="date" value={startDate} onChange={(e) => updateUserData({ startDate: e.target.value })} className="border border-purple-300 p-2 w-full rounded" />
-          </div>
-          <div>
-            <label className="block font-medium mb-1">Goal Date</label>
-            <input type="date" value={goalDate} onChange={(e) => updateUserData({ goalDate: e.target.value })} className="border border-purple-300 p-2 w-full rounded" />
-          </div>
-        </div>
-
         <div className="grid grid-cols-2 gap-4 mb-6">
           <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} className="border border-purple-300 p-2 w-full rounded" />
           <input type="number" value={newWeight} onChange={(e) => setNewWeight(e.target.value)} className="border border-purple-300 p-2 w-full rounded" placeholder="Weight (kg)" />
         </div>
         <button onClick={handleAddWeight} className="mb-8 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded w-full">Save Entry</button>
-
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-2">Progress Chart</h2>
           <ResponsiveContainer width="100%" height={250}>
@@ -154,57 +129,6 @@ export default function App() {
               <Line type="monotone" dataKey="weight" stroke="#7c3aed" dot={{ r: 4 }} name="Actual" />
             </LineChart>
           </ResponsiveContainer>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Days Remaining</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie dataKey="value" data={[{ name: 'Elapsed', value: daysElapsed }, { name: 'Remaining', value: daysRemaining }]} cx="50%" cy="50%" outerRadius={80} labelLine={false} label={({ name, value }) => `${name}: ${value.toFixed(1)}`}>
-                  {COLORS.map((color, index) => <Cell key={`cell-${index}`} fill={color} />)}
-                </Pie>
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Progress to Goal</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie dataKey="value" data={[{ name: 'Progress', value: weightProgress }, { name: 'Remaining', value: 100 - weightProgress }]} cx="50%" cy="50%" outerRadius={80} labelLine={false} label={({ name, value }) => `${name}: ${value.toFixed(1)}`}>
-                  {COLORS.map((color, index) => <Cell key={`cell-${index}`} fill={color} />)}
-                </Pie>
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Weight History</h2>
-          <table className="w-full border rounded overflow-hidden">
-            <thead className="bg-purple-100">
-              <tr>
-                <th className="border p-2">Date</th>
-                <th className="border p-2">Weight (kg)</th>
-                <th className="border p-2">Progress (%)</th>
-                <th className="border p-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {logs.map((entry, index) => (
-                <tr key={index} className="hover:bg-purple-50">
-                  <td className="border p-2">{entry.date}</td>
-                  <td className="border p-2">{entry.weight}</td>
-                  <td className="border p-2">{entry.progress}</td>
-                  <td className="border p-2 text-center">
-                    <button onClick={() => handleDelete(index)} className="text-red-500 hover:text-red-700">Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
